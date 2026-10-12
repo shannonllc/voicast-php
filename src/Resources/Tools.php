@@ -32,8 +32,8 @@ final class Tools extends Resource
 
     /**
      * Calls an agent tool once, as during a call, and returns what it answered. Not billed and not recorded as a call.
-     * `tool` is the name of a tool saved in `agent_id`'s agent, or a tool definition (before saving it; with
-     * `agent_id`, the agent's stored API key is used when `auth.value` is left out). Signed requests carry
+     * `tool` is the name of a tool saved in `agent_id`'s agent (its stored API key is used), or a tool definition
+     * (before saving it; it must carry its own `auth.value`, or 422 `missing_api_key`). Signed requests carry
      * `test: true`, `call.channel` `test` and a `try_...` call ID; `call.tenant` is `null` without `tenant_id`.
      * Up to 30 per minute per environment. A failing tool is still a result with `ok` false (`error`: `unauthorized`,
      * `not_found`, `upstream_error`, `timeout`, `invalid_arguments`, `missing_api_key` and so on).

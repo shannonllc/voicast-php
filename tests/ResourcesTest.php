@@ -166,6 +166,8 @@ final class ResourcesTest extends TestCase
         self::assertSame(['GET', '/v1/usage', null], $t->lastCall());
         $c->usage->get(['from' => '2026-10-01', 'to' => 1790000000000, 'group_by' => 'tenant']);
         self::assertSame(['GET', '/v1/usage?from=2026-10-01&to=1790000000000&group_by=tenant', null], $t->lastCall());
+        $c->usage->get(['group_by' => 'tenant', 'channel' => 'phone', 'tenant_id' => 'ten_1', 'external_id' => 'clinic-1']);
+        self::assertSame(['GET', '/v1/usage?group_by=tenant&channel=phone&tenant_id=ten_1&external_id=clinic-1', null], $t->lastCall());
         $c->connectors->list();
         self::assertSame(['GET', '/v1/connectors', null], $t->lastCall());
         $c->webhooks->createPortalLink();
@@ -210,6 +212,10 @@ final class ResourcesTest extends TestCase
         self::assertSame(['GET', '/v1/billing', null], $t->lastCall());
         $c->billing->createTopup(['amount_yen' => 5000]);
         self::assertSame(['POST', '/v1/billing/topups', ['amount_yen' => 5000]], $t->lastCall());
+        $c->retention->get();
+        self::assertSame(['GET', '/v1/retention', null], $t->lastCall());
+        $c->retention->update(['retention_days' => 7, 'x' => 1]);
+        self::assertSame(['PATCH', '/v1/retention', ['retention_days' => 7]], $t->lastCall());
         $c->tools->getSecret();
         self::assertSame(['GET', '/v1/tools/secret', null], $t->lastCall());
         $c->tools->rotateSecret();

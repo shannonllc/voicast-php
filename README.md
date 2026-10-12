@@ -160,7 +160,7 @@ if (!$r['ok']) {
 | `calls->getByProvider($providerCallId)` | `GET /v1/calls/by-provider/:providerCallId` |
 | `calls->transcript($id)` | `GET /v1/calls/:id/transcript` |
 | `sessions->create(['tenant_id', 'agent_id', 'output'])` | `POST /v1/sessions` |
-| `usage->get(['from', 'to', 'group_by'])` | `GET /v1/usage` |
+| `usage->get(['from', 'to', 'group_by', 'channel', 'tenant_id', 'external_id'])` | `GET /v1/usage` |
 | `connectors->list()` | `GET /v1/connectors` |
 | `connections->list(['tenant_id'])` | `GET /v1/connections` |
 | `connections->create(['connector', 'secret', 'input', 'tenant_id'])` | `POST /v1/connections` |
@@ -174,12 +174,18 @@ if (!$r['ok']) {
 | `tools->getSecret()` | `GET /v1/tools/secret` |
 | `tools->rotateSecret()` | `POST /v1/tools/secret/rotate` |
 | `tools->try(['tool', 'agent_id', 'arguments', 'tenant_id'])` | `POST /v1/tools/try` |
+| `retention->get()` | `GET /v1/retention` |
+| `retention->update(['retention_days'])` | `PATCH /v1/retention` |
 
 Every method also takes per-call options as the last argument: `['timeout' => seconds, 'max_retries' => n]`.
 
 `tenants->update($id, ['agent_id' => null])` removes the tenant's agent. `connections->list()` returns every connection, `connections->list(['tenant_id' => null])` the environment's connections only, and `connections->list(['tenant_id' => 'ten_...'])` that tenant's.
 
 The call summary and category are on the call (`summary`, `category`), filled in when `call.summary_ready` is sent, and `billed_yen` is the fee for the call (the amount taken from the balance).
+
+### Retention
+
+Call records (the call, transcript, collected fields, summary and delivery status) and recordings are deleted automatically after the environment's retention period: 1, 7, 14 or 30 days (30 by default), counted from the end of the call for records and from when they were saved for recordings. `retention->get()` reads it and `retention->update(['retention_days' => 7])` changes it for the API key's environment. Shortening it deletes records past the new period at the next daily cleanup; usage and billing do not change.
 
 ### Balance and top-ups
 

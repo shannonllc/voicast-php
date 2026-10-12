@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.2.0 (2026-10-12)
+
+- Retention period for call records and recordings: `retention->get()` (`GET /v1/retention`) and `retention->update(['retention_days' => 7])` (`PATCH /v1/retention`, retried like other PATCH requests). `retention_days` is 1, 7, 14 or 30 (30 by default and the maximum).
+- `usage->get()` takes `channel`, `tenant_id` and `external_id` filters.
+- `tools->try()`: a tool definition must carry its own `auth.value`; the agent's stored API key is used only with a saved tool's name (422 `missing_api_key`).
+
+## 0.1.0 (2026-10-04)
 
 - First release. Same API coverage as the Node.js SDK 0.1.0 (without the browser helper `voicast/web`). No Composer dependencies (ext-curl and ext-json), PHP 8.1+.
 - Agent tools for third-party APIs: a tool takes `method` (`GET` or `POST`), `sign` (`false` sends the arguments as they are) and `auth` (`['type' => 'api_key', 'header' => ..., 'value' => ...]`; the key is stored encrypted and never returned). An agent's `tool_keys` lists the stored keys (tool name and last 4 characters) on `create`, `get` and `update`.

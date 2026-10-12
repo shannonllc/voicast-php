@@ -15,6 +15,7 @@ use Voicast\Resources\Connections;
 use Voicast\Resources\Connectors;
 use Voicast\Resources\Sessions;
 use Voicast\Resources\Tenants;
+use Voicast\Resources\Retention;
 use Voicast\Resources\Tools;
 use Voicast\Resources\Usage;
 use Voicast\Resources\Webhooks;
@@ -38,6 +39,7 @@ final class Client
     public readonly Webhooks $webhooks;
     public readonly Billing $billing;
     public readonly Tools $tools;
+    public readonly Retention $retention;
     public readonly string $baseUrl;
     /** @internal */
     public readonly HttpClient $http;
@@ -72,5 +74,6 @@ final class Client
         $this->webhooks = new Webhooks($this->http);
         $this->billing = new Billing($this->http);
         $this->tools = new Tools($this->http);
+        $this->retention = new Retention($this->http);
     }
 }
