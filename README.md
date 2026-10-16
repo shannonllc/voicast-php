@@ -155,8 +155,9 @@ if (!$r['ok']) {
 | `tenants->delete($id)` | `DELETE /v1/tenants/:id` |
 | `tenants->listConnections($id)` | `GET /v1/tenants/:id/connections` |
 | `tenants->createConnectLink($id, ['connectors', 'frame_origin'])` | `POST /v1/tenants/:id/connect-links` |
-| `tenants->createSipCredential($id, ['name', 'agent_id'])` | `POST /v1/tenants/:id/sip-credentials` (the password is returned only here) |
+| `tenants->createSipCredential($id, ['name', 'agent_id', 'transfer_to'])` | `POST /v1/tenants/:id/sip-credentials` (the password is returned only here) |
 | `tenants->listSipCredentials($id)` | `GET /v1/tenants/:id/sip-credentials` |
+| `tenants->updateSipCredential($id, $credentialId, ['name', 'agent_id', 'transfer_to'])` | `PATCH /v1/tenants/:id/sip-credentials/:credential` |
 | `tenants->deleteSipCredential($id, $credentialId)` | `DELETE /v1/tenants/:id/sip-credentials/:credential` |
 | `calls->list(['tenant_id', 'before', 'limit'])` | `GET /v1/calls` |
 | `calls->get($id)` | `GET /v1/calls/:id` |
@@ -182,7 +183,7 @@ if (!$r['ok']) {
 
 Every method also takes per-call options as the last argument: `['timeout' => seconds, 'max_retries' => n]`.
 
-`tenants->update($id, ['agent_id' => null])` removes the tenant's agent. `connections->list()` returns every connection, `connections->list(['tenant_id' => null])` the environment's connections only, and `connections->list(['tenant_id' => 'ten_...'])` that tenant's.
+`tenants->update($id, ['agent_id' => null])` removes the tenant's agent, and `tenants->updateSipCredential($id, $credentialId, ['transfer_to' => null])` turns the transfer off. `connections->list()` returns every connection, `connections->list(['tenant_id' => null])` the environment's connections only, and `connections->list(['tenant_id' => 'ten_...'])` that tenant's.
 
 The call summary and category are on the call (`summary`, `category`), filled in when `call.summary_ready` is sent, and `billed_yen` is the fee for the call (the amount taken from the balance).
 

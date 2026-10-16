@@ -79,6 +79,16 @@ final class ResourcesTest extends TestCase
         self::assertSame(['POST', '/v1/tenants/ten_1/sip-credentials', ['name' => '本院の PBX', 'agent_id' => 'agt_1']], $t->lastCall());
         $c->tenants->createSipCredential('ten_1', ['agent_id' => null]);
         self::assertSame('{"agent_id":null}', $t->last()->body);
+        $c->tenants->createSipCredential('ten_1', ['transfer_to' => '200']);
+        self::assertSame('{"transfer_to":"200"}', $t->last()->body);
+        $c->tenants->updateSipCredential('ten_1', 'sipc_1', ['transfer_to' => 'sip:200@pbx.example.com']);
+        self::assertSame(['PATCH', '/v1/tenants/ten_1/sip-credentials/sipc_1', ['transfer_to' => 'sip:200@pbx.example.com']], $t->lastCall());
+        $c->tenants->updateSipCredential('ten_1', 'sipc_1', ['name' => 'x', 'agent_id' => null, 'transfer_to' => null]);
+        self::assertSame('{"name":"x","agent_id":null,"transfer_to":null}', $t->last()->body);
+        $c->tenants->updateSipCredential('ten_1', 'sipc_1', []);
+        self::assertSame(['PATCH', '/v1/tenants/ten_1/sip-credentials/sipc_1', '{}'], self::raw($t));
+        $c->tenants->updateSipCredential('ten/1', 'sipc/1', ['name' => 'x']);
+        self::assertSame('https://api.test/v1/tenants/ten%2F1/sip-credentials/sipc%2F1', $t->last()->url);
         $c->tenants->listSipCredentials('ten_1');
         self::assertSame(['GET', '/v1/tenants/ten_1/sip-credentials', null], $t->lastCall());
         $c->tenants->deleteSipCredential('ten_1', 'sipc_1');

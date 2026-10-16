@@ -236,6 +236,9 @@ final class HttpTest extends TestCase
         $t = new FakeTransport(FakeTransport::json(502, []), FakeTransport::json(200, ['id' => 'ten_1']));
         FakeTransport::client($t)->tenants->update('ten_1', ['name' => 'x']);
         self::assertCount(2, $t->calls);
+        $t = new FakeTransport(new ConnectionException('reset'), FakeTransport::json(200, ['id' => 'sipc_1']));
+        FakeTransport::client($t)->tenants->updateSipCredential('ten_1', 'sipc_1', ['transfer_to' => '200']);
+        self::assertCount(2, $t->calls);
         $t = new FakeTransport(new ConnectionException('reset'), FakeTransport::json(201, ['url' => 'u', 'expires_at' => 1]));
         FakeTransport::client($t)->webhooks->createPortalLink();
         self::assertCount(2, $t->calls);

@@ -97,16 +97,19 @@ final class Tenants extends Resource
 
     /**
      * Creates Digest credentials for a PBX that sends calls over SIP to `sip.voicast.jp`.
-     * `agent_id` left out (or `null`) uses the tenant's agent. The password is returned only here.
+     * `agent_id` left out (or `null`) uses the tenant's agent. `transfer_to` is where the PBX transfers the call
+     * (with SIP REFER) when the AI hands off to a person: an extension or number (digits and `*` `#` `+`, up to 32
+     * characters) or a SIP URI (`sip:` / `sips:`, up to 200 characters); left out (or `''` / `null`) for no transfer.
+     * The password is returned only here.
      * Not retried on a 5xx or a connection error (a retry would make a second credential).
      *
-     * @param array{name?: string, agent_id?: string|null} $params
+     * @param array{name?: string, agent_id?: string|null, transfer_to?: string|null} $params
      * @param array{timeout?: float|int, max_retries?: int} $options
-     * @return array{id: string, username: string, password: string, realm: string, server: string, tenant_id: string, agent_id: string|null, name: string, created_at: int}
+     * @return array{id: string, username: string, password: string, realm: string, server: string, tenant_id: string, agent_id: string|null, name: string, transfer_to: string, created_at: int}
      */
     public function createSipCredential(string $tenantId, array $params = [], array $options = []): array
     {
-        return $this->http->request('POST', '/v1/tenants/' . self::id($tenantId) . '/sip-credentials', false, body: self::object(self::pick($params, ['name', 'agent_id'])), hasBody: true, options: self::opts($options));
+        return $this->http->request('POST', '/v1/tenants/' . self::id($tenantId) . '/sip-credentials', false, body: self::object(self::pick($params, ['name', 'agent_id', 'transfer_to'])), hasBody: true, options: self::opts($options));
     }
 
     /**
@@ -118,6 +121,19 @@ final class Tenants extends Resource
     public function listSipCredentials(string $tenantId, array $options = []): array
     {
         return $this->http->request('GET', '/v1/tenants/' . self::id($tenantId) . '/sip-credentials', true, options: self::opts($options));
+    }
+
+    /**
+     * Changes only the keys given and returns the credentials (without the password).
+     * `'agent_id' => null` uses the tenant's agent; `'transfer_to' => ''` or `null` turns the transfer off.
+     *
+     * @param array{name?: string, agent_id?: string|null, transfer_to?: string|null} $params
+     * @param array{timeout?: float|int, max_retries?: int} $options
+     * @return array{id: string, username: string, realm: string, server: string, tenant_id: string, agent_id: string|null, name: string, transfer_to: string, created_at: int}
+     */
+    public function updateSipCredential(string $tenantId, string $credentialId, array $params, array $options = []): array
+    {
+        return $this->http->request('PATCH', '/v1/tenants/' . self::id($tenantId) . '/sip-credentials/' . self::id($credentialId), true, body: self::object(self::pick($params, ['name', 'agent_id', 'transfer_to'])), hasBody: true, options: self::opts($options));
     }
 
     /**
