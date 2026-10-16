@@ -73,6 +73,18 @@ final class ResourcesTest extends TestCase
         self::assertSame(['POST', '/v1/tenants/ten_1/connect-links', '{}'], self::raw($t));
         $c->tenants->createConnectLink('ten_1', ['connectors' => ['google_calendar'], 'frame_origin' => 'https://saas.example']);
         self::assertSame('{"connectors":["google_calendar"],"frame_origin":"https://saas.example"}', $t->last()->body);
+        $c->tenants->createSipCredential('ten_1');
+        self::assertSame(['POST', '/v1/tenants/ten_1/sip-credentials', '{}'], self::raw($t));
+        $c->tenants->createSipCredential('ten_1', ['name' => '本院の PBX', 'agent_id' => 'agt_1']);
+        self::assertSame(['POST', '/v1/tenants/ten_1/sip-credentials', ['name' => '本院の PBX', 'agent_id' => 'agt_1']], $t->lastCall());
+        $c->tenants->createSipCredential('ten_1', ['agent_id' => null]);
+        self::assertSame('{"agent_id":null}', $t->last()->body);
+        $c->tenants->listSipCredentials('ten_1');
+        self::assertSame(['GET', '/v1/tenants/ten_1/sip-credentials', null], $t->lastCall());
+        $c->tenants->deleteSipCredential('ten_1', 'sipc_1');
+        self::assertSame(['DELETE', '/v1/tenants/ten_1/sip-credentials/sipc_1', null], $t->lastCall());
+        $c->tenants->deleteSipCredential('ten/1', 'sipc/1');
+        self::assertSame('https://api.test/v1/tenants/ten%2F1/sip-credentials/sipc%2F1', $t->last()->url);
     }
 
     public function testCalls(): void

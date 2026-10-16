@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0 (2026-10-16)
+
+- SIP credentials for a PBX that sends calls to `sip.voicast.jp`: `tenants->createSipCredential($tenantId, ['name', 'agent_id'])` (`POST /v1/tenants/:id/sip-credentials`, returns the password once, not retried on a 5xx or a connection error), `tenants->listSipCredentials($tenantId)` and `tenants->deleteSipCredential($tenantId, $credentialId)`.
+
 ## 0.2.0 (2026-10-12)
 
 - Retention period for call records and recordings: `retention->get()` (`GET /v1/retention`) and `retention->update(['retention_days' => 7])` (`PATCH /v1/retention`, retried like other PATCH requests). `retention_days` is 1, 7, 14 or 30 (30 by default and the maximum).

@@ -94,4 +94,39 @@ final class Tenants extends Resource
     {
         return $this->http->request('POST', '/v1/tenants/' . self::id($tenantId) . '/connect-links', true, body: self::object(self::pick($params, ['connectors', 'frame_origin'])), hasBody: true, options: self::opts($options));
     }
+
+    /**
+     * Creates Digest credentials for a PBX that sends calls over SIP to `sip.voicast.jp`.
+     * `agent_id` left out (or `null`) uses the tenant's agent. The password is returned only here.
+     * Not retried on a 5xx or a connection error (a retry would make a second credential).
+     *
+     * @param array{name?: string, agent_id?: string|null} $params
+     * @param array{timeout?: float|int, max_retries?: int} $options
+     * @return array{id: string, username: string, password: string, realm: string, server: string, tenant_id: string, agent_id: string|null, name: string, created_at: int}
+     */
+    public function createSipCredential(string $tenantId, array $params = [], array $options = []): array
+    {
+        return $this->http->request('POST', '/v1/tenants/' . self::id($tenantId) . '/sip-credentials', false, body: self::object(self::pick($params, ['name', 'agent_id'])), hasBody: true, options: self::opts($options));
+    }
+
+    /**
+     * Lists the tenant's SIP credentials (without passwords).
+     *
+     * @param array{timeout?: float|int, max_retries?: int} $options
+     * @return array{data: list<array<string, mixed>>}
+     */
+    public function listSipCredentials(string $tenantId, array $options = []): array
+    {
+        return $this->http->request('GET', '/v1/tenants/' . self::id($tenantId) . '/sip-credentials', true, options: self::opts($options));
+    }
+
+    /**
+     * Deletes SIP credentials. Calls on them are refused at once.
+     *
+     * @param array{timeout?: float|int, max_retries?: int} $options
+     */
+    public function deleteSipCredential(string $tenantId, string $credentialId, array $options = []): void
+    {
+        $this->http->request('DELETE', '/v1/tenants/' . self::id($tenantId) . '/sip-credentials/' . self::id($credentialId), true, options: self::opts($options));
+    }
 }

@@ -257,6 +257,7 @@ final class HttpTest extends TestCase
             fn () => $c->agents->update('a', ['config' => []]),
             fn () => $c->tenants->create(['external_id' => 'x']),
             fn () => $c->tenants->rotateSecret('t'),
+            fn () => $c->tenants->createSipCredential('t'),
             fn () => $c->sessions->create(['tenant_id' => 't']),
             fn () => $c->connections->create(['connector' => 'teams', 'secret' => 's']),
             fn () => $c->billing->createTopup(['amount_yen' => 500]),

@@ -155,6 +155,9 @@ if (!$r['ok']) {
 | `tenants->delete($id)` | `DELETE /v1/tenants/:id` |
 | `tenants->listConnections($id)` | `GET /v1/tenants/:id/connections` |
 | `tenants->createConnectLink($id, ['connectors', 'frame_origin'])` | `POST /v1/tenants/:id/connect-links` |
+| `tenants->createSipCredential($id, ['name', 'agent_id'])` | `POST /v1/tenants/:id/sip-credentials` (the password is returned only here) |
+| `tenants->listSipCredentials($id)` | `GET /v1/tenants/:id/sip-credentials` |
+| `tenants->deleteSipCredential($id, $credentialId)` | `DELETE /v1/tenants/:id/sip-credentials/:credential` |
 | `calls->list(['tenant_id', 'before', 'limit'])` | `GET /v1/calls` |
 | `calls->get($id)` | `GET /v1/calls/:id` |
 | `calls->getByProvider($providerCallId)` | `GET /v1/calls/by-provider/:providerCallId` |
@@ -242,7 +245,7 @@ try {
 
 ## Retries and timeouts
 
-`new Client($key, ['timeout' => 30, 'max_retries' => 2])` are the defaults. 429 is retried for every request, waiting `retry-after` (up to one minute). 5xx, timeouts and connection errors are retried only for requests safe to repeat (GET, PATCH, DELETE, and creating links), with exponential backoff from 0.5 s. Creating agents, tenants, sessions, connections and top-ups, updating an agent and rotating a secret are not retried on those, so they never run twice. The API does not take an `Idempotency-Key`.
+`new Client($key, ['timeout' => 30, 'max_retries' => 2])` are the defaults. 429 is retried for every request, waiting `retry-after` (up to one minute). 5xx, timeouts and connection errors are retried only for requests safe to repeat (GET, PATCH, DELETE, and creating links), with exponential backoff from 0.5 s. Creating agents, tenants, sessions, connections, SIP credentials and top-ups, updating an agent and rotating a secret are not retried on those, so they never run twice. The API does not take an `Idempotency-Key`.
 
 To send requests through Guzzle or a PSR-18 client, implement `Voicast\Http\Transport` and pass it as `'transport'`.
 
