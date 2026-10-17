@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1 (2026-10-17)
+
+- Republished from a cleaned history. No code changes.
+
 ## 0.5.0 (2026-10-17)
 
 - Voices are chosen by ID: the agent config `voice` takes a voice ID, such as `female-breezy` (default), `female-firm` or `male-calm`. Agents read from the API return these IDs. The README lists only the IDs. The API still accepts the earlier voice names and saves the matching ID, so existing code keeps working; switch to the ID.
