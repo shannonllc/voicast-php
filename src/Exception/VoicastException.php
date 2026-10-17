@@ -15,7 +15,7 @@ class VoicastException extends \RuntimeException
      * @param int|null $status HTTP status. Null when no response was received.
      * @param string|null $errorCode API error code, such as `invalid_request`, `in_use` or `balance_depleted`.
      * @param mixed $details Extra information from the API, such as the list of invalid fields for a 422.
-     * @param string|null $requestId Request ID (`x-request-id`, or Cloudflare's `cf-ray`) to quote when contacting support.
+     * @param string|null $requestId Request ID (`x-request-id`) to quote when contacting support.
      */
     public function __construct(
         string $message,

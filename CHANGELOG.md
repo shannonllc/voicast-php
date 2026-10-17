@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.0 (2026-10-17)
+
+- Voices are chosen by ID: the agent config `voice` takes a voice ID, such as `female-breezy` (default), `female-firm` or `male-calm`. Agents read from the API return these IDs. The README lists only the IDs. The API still accepts the earlier voice names and saves the matching ID, so existing code keeps working; switch to the ID.
+- Agent tools take `confirm_message` and `done_message`: for `confirm` tools, voicast now asks the caller with a fixed confirmation message and tells the result in a fixed message. These templates set the messages; `{argument name}` inserts an argument value (dates and times are read as spoken dates).
+
 ## 0.4.0 (2026-10-16)
 
 - Transfer on a handoff for SIP: SIP credentials carry `transfer_to` (always present, `''` for none), where the PBX transfers the call with SIP REFER when the AI hands off to a person (outcome `handoff`): an extension or number (digits and `*` `#` `+`, up to 32 characters) or a SIP URI (`sip:` / `sips:`, up to 200 characters). `tenants->createSipCredential` takes `transfer_to`.

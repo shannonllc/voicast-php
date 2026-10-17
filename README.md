@@ -4,7 +4,7 @@ PHP SDK for [voicast](https://voicast.jp/), the headless conversational AI platf
 
 - No Composer dependencies. Uses ext-curl and ext-json.
 - PHP 8.1+.
-- Server-side only. To talk from a browser, create a session here and use `voicast/web` from the [Node.js SDK](https://www.npmjs.com/package/voicast) (or any Pipecat SmallWebRTC client) in the browser.
+- Server-side only. To talk from a browser, create a session here and use `voicast/web` from the [Node.js SDK](https://www.npmjs.com/package/voicast) in the browser.
 
 ## Install
 
@@ -31,7 +31,7 @@ $agent = $voicast->agents->create([
         ],
         'handoff_when' => ['急患', '担当者と話したいと言われた'],
         'closing' => '承りました。担当者から折り返しご連絡します。',
-        'voice' => 'Kore',
+        'voice' => 'female-firm',
     ],
 ]);
 

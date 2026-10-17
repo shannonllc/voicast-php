@@ -17,7 +17,7 @@ use function Voicast\verifyToolCall;
 use function Voicast\verifyWebhook;
 
 /**
- * Receiver-side verification of webhooks and in-call tool calls. The vectors are signed like apps/voice/tools.py and
+ * Receiver-side verification of webhooks and in-call tool calls. The vectors are signed like voicast and
  * by the Node SDK, with results decided by the Node SDK (scripts/sdk-vectors.mjs).
  */
 final class WebhookTest extends TestCase
@@ -82,12 +82,12 @@ final class WebhookTest extends TestCase
 
     public function testSignMatchesToolsPyAndNode(): void
     {
-        foreach (['signed like tools.py', 'signed by the node sdk', 'standard webhooks spec vector'] as $name) {
+        foreach (['signed like voicast', 'signed by the node sdk', 'standard webhooks spec vector'] as $name) {
             $v = self::find($name);
             $h = $v['headers'];
             self::assertSame($h['webhook-signature'], (new Webhook([$v['secret'], self::OTHER]))->sign($h['webhook-id'], (int) $h['webhook-timestamp'], $v['payload']));
         }
-        $v = self::find('signed like tools.py');
+        $v = self::find('signed like voicast');
         $h = $v['headers'];
         $date = (new \DateTimeImmutable())->setTimestamp((int) $h['webhook-timestamp']);
         self::assertSame($h['webhook-signature'], (new Webhook(self::SECRET))->sign($h['webhook-id'], $date, $v['payload']));
@@ -130,7 +130,7 @@ final class WebhookTest extends TestCase
 
     public function testHeaderForms(): void
     {
-        $v = self::find('signed like tools.py');
+        $v = self::find('signed like voicast');
         $wh = self::at($v);
         $h = $v['headers'];
         $upper = ['Webhook-Id' => $h['webhook-id'], 'WEBHOOK-TIMESTAMP' => [$h['webhook-timestamp'], 'x'], 'webhook-signature' => $h['webhook-signature']];
@@ -177,7 +177,7 @@ final class WebhookTest extends TestCase
 
     public function testDefaultToleranceAndClock(): void
     {
-        $v = self::find('signed like tools.py');
+        $v = self::find('signed like voicast');
         $wh = new Webhook(self::SECRET);
         self::assertSame(300, $wh->tolerance);
         $this->expectExceptionMessage('Message timestamp too old');
